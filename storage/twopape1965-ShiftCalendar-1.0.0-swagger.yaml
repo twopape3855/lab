@@ -1,0 +1,202 @@
+openapi: 3.0.0
+info:
+  description: This is an API that will recieve calendar updates for resturant worker shifts and inputs for the shifts profitability.
+  version: "1.0.0"
+  title: Simple Shift Tracker
+  contact:
+    email: cwoolfries2@my.bcit.ca
+tags:
+  - name: user
+    description: Operations regarding the user
+  - name: calendar
+    description: Operations regarding the calendar
+paths:
+  # /user-add:
+  #   post:
+  #     tags:
+  #       - user
+  #     summary: adds user to the system
+  #     operationId: app.add_user
+  #     description: adds a unique user to the system
+  #     responses:
+  #       '201':
+  #         description: user added
+  #       '400':
+  #         description: 'invalid input, object invalid'
+  #       '409':
+  #         description: user already exists
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/User'
+  #       description: user item to add    
+  # /user/add-shift:
+  #   post:
+  #     tags:
+  #       - calendar
+  #     summary: adds a shift to the users calendar
+  #     operationId: app.add_shift
+  #     description: Adds a shift to calendar
+  #     responses:
+  #       '201':
+  #         description: shift added
+  #       '400':
+  #         description: 'invalid input, object invalid'
+  #       '409':
+  #         description: shift already exists
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/Shift'
+  #       description: shift item to add
+  # /user/shift/income:
+  #   post:
+  #     tags:
+  #       - calendar
+  #     summary: add the amount made based on shift and user
+  #     operationId: app.add_income
+  #     description: adds an income based on shift and user
+  #     responses:
+  #       '201':
+  #         description: income added
+  #       '400':
+  #         description: 'invalid input, object invalid'
+  #       '409':
+  #         description: shift and user pair already has income
+  #     requestBody:
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/Income'
+  #       description: income item to add
+  /shifts:
+    get:
+      tags:
+        - calendar
+      summary: gets new shift entries
+      operationId: app.get_shifts
+      parameters:
+        - name: timestamp
+          in: query
+          description: Limits the number of items on a page
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-29T09:12:33.001Z
+      responses:
+        '200':
+          description: Successfully returned a list of shifts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shift'
+        '400':
+          description: Invalid Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /incomes:
+    get:
+      tags:
+        - calendar
+      summary: gets new income entries
+      operationId: app.get_incomes
+      parameters:
+        - name: timestamp
+          in: query
+          description: Limits the number of items on a page
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-29T09:12:33.001Z
+      responses:
+        '200':
+          description: Successfully returned a list of incomes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Income'
+        '400':
+          description: Invalid Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+components:
+  schemas:
+    Income:
+      type: object
+      required:
+        - income_id
+        - income_amount
+        - shift_id
+      properties:
+        income_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0853
+        income_amount:
+          type: number
+          format: currency
+          example: 100
+        shift_id:
+          type: number
+          example: 1
+    Shift:
+      type: object
+      required:
+        - shift_id
+        - shift_name
+        - start_time
+        - end_time
+        - user_id
+      properties:
+        shift_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        shift_name:
+          type: string
+          example: Serving Shift
+        start_time:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        end_time:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        user_id:
+          type: number
+          example: 1
+    User:
+      required:
+        - user_id
+        - user_name
+        - password
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0852
+        user_name:
+          type: string
+          example: Cameron Woolfries
+        password:
+          type: string
+          format: password
+          example: password123
+      type: object

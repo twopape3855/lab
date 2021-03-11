@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  description: This API provides event stats
+  version: "1.0.0"
+  title: Stats API
+  contact:
+    email: cwoolfries2@my.bcit.ca
+paths:
+  /stats:
+    get:
+      summary: Gets the event stats
+      operationId: app.get_stats
+      description: Gets user and calendar proccessed statistics
+      responses:
+        '200':
+          description: Successfully returned a list of events
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/CalendarStats'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+components:
+  schemas:
+    CalendarStats:
+      type: object
+      required:
+      - num_shifts
+      - num_incomes
+      - max_income
+      - timestamp
+      properties:
+        num_shifts:
+          type: integer
+          example: 100000
+        num_incomes:
+          type: integer
+          example: 80000
+        max_income:
+          type: integer
+          example: 500
+        timestamp:
+          type: string
+          example: '2016-08-29T09:12:33.001Z'
+    

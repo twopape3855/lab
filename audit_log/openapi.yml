@@ -1,0 +1,137 @@
+openapi: 3.0.0
+info:
+  description: This API provides audit info
+  version: "1.0.0"
+  title: Audit API
+  contact:
+    email: cwoolfries2@my.bcit.ca
+paths:
+  /shift:
+    get:
+      summary: gets a shift from history
+      operationId: app.get_shift
+      parameters:
+        - name: index
+          in: query
+          description: Gets the shift at the index in the event store
+          schema:
+            type: integer
+            example: 100
+      responses:
+        '200':
+          description: Successfully returned a shift event
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Shift'
+        '400':
+          description: Invalid Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+  /income:
+    get:
+      tags:
+        - calendar
+      summary: gets a income from history
+      operationId: app.get_income
+      parameters:
+        - name: index
+          in: query
+          description: Gets the income at the index in the event store
+          schema:
+            type: integer
+            example: 100
+      responses:
+        '200':
+          description: Successfully returned an income event
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Income'
+        '400':
+          description: Invalid Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+components:
+  schemas:
+    Income:
+      type: object
+      required:
+        - income_id
+        - income_amount
+        - shift_id
+      properties:
+        income_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0853
+        income_amount:
+          type: number
+          format: currency
+          example: 100
+        shift_id:
+          type: number
+          example: 1
+    Shift:
+      type: object
+      required:
+        - shift_id
+        - shift_name
+        - start_time
+        - end_time
+        - user_id
+      properties:
+        shift_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        shift_name:
+          type: string
+          example: Serving Shift
+        start_time:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        end_time:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        user_id:
+          type: number
+          example: 1
+    User:
+      required:
+        - user_id
+        - user_name
+        - password
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0852
+        user_name:
+          type: string
+          example: Cameron Woolfries
+        password:
+          type: string
+          format: password
+          example: password123
+      type: object

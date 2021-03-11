@@ -1,0 +1,11 @@
+version: 1
+eventstore1:
+  url: http://localhost:8090/user-add
+eventstore2:
+  url: http://localhost:8090/user/add-shift
+eventstore3:
+  url: http://localhost:8090/user/shift/income
+events:
+  hostname: acit3855-sba-microservices-vm-cameron-woolfries.eastus2.cloudapp.azure.com
+  port: 9092
+  topic: events
