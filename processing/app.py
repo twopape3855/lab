@@ -9,6 +9,7 @@ import logging
 import logging.config
 import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
+from flask_cors import CORS, cross_origin
 
 YAML = "twopape1965-ShiftCalendar-1.0.0-swagger.yaml"
 
@@ -156,6 +157,9 @@ def init_scheduler():
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
+
+CORS(app.app)
+app.app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 app.add_api(YAML,strict_validation=True, validate_responses=True)

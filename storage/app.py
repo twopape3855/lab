@@ -5,6 +5,7 @@ import logging
 import logging.config
 import mysql.connector
 
+from flask_cors import CORS, cross_origin
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from base import Base
@@ -175,6 +176,8 @@ def process_messages():
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 
+CORS(app.app)
+app.app.config['CORS_HEADERS'] = 'Content-Type'
 
 app.add_api(YAML, strict_validation=True, validate_responses=True)
 
