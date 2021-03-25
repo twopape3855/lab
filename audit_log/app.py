@@ -5,6 +5,7 @@ import logging
 import logging.config
 import json
 from pykafka import KafkaClient
+from flask_cors import CORS, cross_origin
 
 def get_shift(index):
     """ Get shift Reading in History """
@@ -56,6 +57,9 @@ def get_income(index):
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
+
+CORS(app.app)
+app.app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 app.add_api('openapi.yml', strict_validation=True, validate_responses=True)
