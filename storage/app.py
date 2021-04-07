@@ -7,6 +7,7 @@ import mysql.connector
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import and_
 from base import Base
 from users import User
 from shifts import Shift
@@ -102,17 +103,18 @@ def add_income(body):
     return NoContent, 200
 
 
-def get_shifts(timestamp):
+def get_shifts(start_timestamp, end_timestamp):
     """Gets new shifts after the timestamp"""
 
     logger.info(f"Connecting to DB. Hostname:acit3855-sba-microservices-vm-cameron-woolfries.eastus2.cloudapp.azure.com, Port:3306.")
 
     session = DB_SESSION()
 
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    print(timestamp_datetime)
+    start_timestamp_datetime = datetime.datetime.strptime(start_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
-    shifts = session.query(Shift).filter(Shift.date_created >= timestamp_datetime)
+    shifts = session.query(Shift).filter(and_(Shift.date_created >= timestamp_datetime, Shift.date_created < end_timestamp_datetime))
 
     results_list = []
     
@@ -121,22 +123,23 @@ def get_shifts(timestamp):
 
     session.close()
 
-    logger.info("Query for shifts after %s returns %d results" %(timestamp, len(results_list)))
+    logger.info("Query for shifts after %s returns %d results" %(start_timestamp, len(results_list)))
 
     return results_list, 200
 
 
-def get_incomes(timestamp):
+def get_incomes(starrt_timestamp, end_timestamp):
     """Gets new incomes after the timestamp"""
 
     logger.info(f"Connecting to DB. Hostname:acit3855-sba-microservices-vm-cameron-woolfries.eastus2.cloudapp.azure.com, Port:3306.")
 
     session = DB_SESSION()
 
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    print(timestamp_datetime)
+    start_timestamp_datetime = datetime.datetime.strptime(start_timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
-    incomes = session.query(Income).filter(Income.date_created >= timestamp_datetime)
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+
+    incomes = session.query(Income).filter(and_(Income.date_created >= start_timestamp_datetime, Income.date_created < end_timestamp_datetime))
 
     results_list = []
     
@@ -145,7 +148,7 @@ def get_incomes(timestamp):
 
     session.close()
 
-    logger.info("Query for incomes after %s returns %d results" %(timestamp, len(results_list)))
+    logger.info("Query for incomes after %s returns %d results" %(start_timestamp, len(results_list)))
 
     return results_list, 200
 
