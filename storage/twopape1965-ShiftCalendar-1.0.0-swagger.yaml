@@ -78,7 +78,14 @@ paths:
       summary: gets new shift entries
       operationId: app.get_shifts
       parameters:
-        - name: timestamp
+        - name: start_timestamp
+          in: query
+          description: Limits the number of items on a page
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-29T09:12:33.001Z
+        - name: end_timestamp
           in: query
           description: Limits the number of items on a page
           schema:
@@ -111,6 +118,13 @@ paths:
       operationId: app.get_incomes
       parameters:
         - name: timestamp
+          in: query
+          description: Limits the number of items on a page
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-29T09:12:33.001Z
+        - name: end_timestamp
           in: query
           description: Limits the number of items on a page
           schema:
