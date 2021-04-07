@@ -71,6 +71,7 @@ services:
     volumes:
       - /home/cam/config/processing:/config
       - /home/cam/logs:/logs
+      - processing-db:/data
     depends_on:
       - "storage"
   audit_log:
@@ -93,4 +94,5 @@ services:
       - "audit_log"
 # Names our volume
 volumes:
- my-db:
+  my-db:
+  processing-db:
