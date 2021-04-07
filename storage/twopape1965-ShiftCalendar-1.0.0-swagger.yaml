@@ -117,7 +117,7 @@ paths:
       summary: gets new income entries
       operationId: app.get_incomes
       parameters:
-        - name: timestamp
+        - name: start_timestamp
           in: query
           description: Limits the number of items on a page
           schema:
