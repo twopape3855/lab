@@ -37,7 +37,7 @@ def populate_stats():
 
     curr_date = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
 
-    r1 = requests.get(app_config['eventstore1']['url']+curr_stats['timestamp'])
+    r1 = requests.get(app_config['eventstore1']['url']+"/shifts?start_timestamp="+curr_stats['timestamp']+"&end_timestamp="+curr_date)
 
     r1_list = r1.json()
 
@@ -55,7 +55,7 @@ def populate_stats():
     else:
         logger.error(f'Response code not OK.')
 
-    r2 = requests.get(app_config['eventstore2']['url']+curr_stats['timestamp'])
+    r2 = requests.get(app_config['eventstore2']['url']"/incomes?start_timestamp="+curr_stats['timestamp']+"&end_timestamp="+curr_date)
 
     r2_list = r2.json()
 

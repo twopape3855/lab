@@ -4,6 +4,7 @@ import yaml
 import logging
 import logging.config
 import mysql.connector
+from pykafka.exceptions import SocketDisconnectedError, LeaderNotAvailable
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -156,7 +157,20 @@ def get_incomes(starrt_timestamp, end_timestamp):
 def process_messages():
     """Process event messages"""
     hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
-    client = KafkaClient(hosts=hostname)
+    max_tries = app_config['tries']['max_retries']
+    current_attempts=0
+    while current_attempts < max_tries:
+        logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
+        try:
+            client = KafkaClient(hosts=hostname)
+            topic = client.topics[str.encode(app_config['events']['topic'])]
+        except (SocketDisconnectedError, LeaderNotAvailable) as e:
+            logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in 
+                            {app_config['sleep']['time']} seconds.")
+            time.sleep(app_config['sleep']['time'])
+            current_attempts+=1
+
+
     topic = client.topics[str.encode(app_config['events']['topic'])]
     consumer = topic.get_simple_consumer(consumer_group=b'event_group',
                                                 reset_offset_on_start=False,
