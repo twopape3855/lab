@@ -124,7 +124,7 @@ def get_shifts(start_timestamp, end_timestamp):
 
     session.close()
 
-    logger.info("Query for shifts after %s returns %d results" %(start_timestamp, len(results_list)))
+    logger.info("Query for shifts after %s and before %s returns %d results" %(start_timestamp, end_timestamp, len(results_list)))
 
     return results_list, 200
 
@@ -149,7 +149,7 @@ def get_incomes(start_timestamp, end_timestamp):
 
     session.close()
 
-    logger.info("Query for incomes after %s returns %d results" %(start_timestamp, len(results_list)))
+    logger.info("Query for shifts after %s and before %s returns %d results" %(start_timestamp, end_timestamp, len(results_list)))
 
     return results_list, 200
 
