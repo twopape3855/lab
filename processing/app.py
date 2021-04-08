@@ -55,7 +55,7 @@ def populate_stats():
     else:
         logger.error(f'Response code not OK.')
 
-    r2 = requests.get(app_config['eventstore2']['url']"/incomes?start_timestamp="+curr_stats['timestamp']+"&end_timestamp="+curr_date)
+    r2 = requests.get(app_config['eventstore2']['url']+"/incomes?start_timestamp="+curr_stats['timestamp']+"&end_timestamp="+curr_date)
 
     r2_list = r2.json()
 
