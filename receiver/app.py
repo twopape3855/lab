@@ -90,7 +90,6 @@ def add_income(body):
 
     # client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
     # topic = client.topics[str.encode(app_config['events']['topic'])]
-    producer = get_producer()
 
     msg = { "type" : "income",
             "datetime" : datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
