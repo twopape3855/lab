@@ -8,25 +8,9 @@ import logging
 import logging.config
 import datetime
 from pykafka import KafkaClient
+from pykafka.exceptions import SocketDisconnectedError, LeaderNotAvailable
 
 YAML = "twopape1965-ShiftCalendar-1.0.0-swagger.yaml"
-
-
-hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
-max_tries = app_config['tries']['max_retries']
-current_attempts=0
-while current_attempts < max_tries:
-    logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
-    try:
-        client = KafkaClient(hosts=hostname)
-        topic = client.topics[str.encode(app_config['events']['topic'])]
-        producer = topic.get_sync_producer()
-        break
-    except (SocketDisconnectedError, LeaderNotAvailable) as e:
-        logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
-        time.sleep(app_config['sleep']['time'])
-        current_attempts+=1
-
 
 
 def log_data(FILE_NAME, MAX_EVENTS, body, req_list):
@@ -142,6 +126,12 @@ app.add_api(YAML,strict_validation=True, validate_responses=True)
 
 # logger = logging.getLogger('basicLogger')
 
+
+
+
+
+
+
 if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
     print("In Test Environment")
     app_conf_file = "/config/app_conf.yml"
@@ -166,6 +156,25 @@ logger = logging.getLogger('basicLogger')
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
+
+hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
+max_tries = app_config['tries']['max_retries']
+current_attempts=0
+while current_attempts < max_tries:
+    logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
+    try:
+        print("hi")
+        client = KafkaClient(hosts=hostname)
+        print("hello")
+        topic = client.topics[str.encode(app_config['events']['topic'])]
+        print("world")
+        producer = topic.get_sync_producer()
+        print("bye")
+        break
+    except (SocketDisconnectedError, LeaderNotAvailable) as e:
+        logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
+        time.sleep(app_config['sleep']['time'])
+        current_attempts+=1
 
 if __name__ == "__main__":
     app.run(port=8080)
