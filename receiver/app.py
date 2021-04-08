@@ -31,8 +31,7 @@ def get_producer():
             client = KafkaClient(hosts=hostname)
             topic = client.topics[str.encode(app_config['events']['topic'])]
         except (SocketDisconnectedError, LeaderNotAvailable) as e:
-            logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in 
-                            {app_config['sleep']['time']} seconds.")
+            logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
             time.sleep(app_config['sleep']['time'])
             current_attempts+=1
     producer = topic.get_sync_producer()
