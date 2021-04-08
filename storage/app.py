@@ -129,7 +129,7 @@ def get_shifts(start_timestamp, end_timestamp):
     return results_list, 200
 
 
-def get_incomes(starrt_timestamp, end_timestamp):
+def get_incomes(start_timestamp, end_timestamp):
     """Gets new incomes after the timestamp"""
 
     logger.info(f"Connecting to DB. Hostname:acit3855-sba-microservices-vm-cameron-woolfries.eastus2.cloudapp.azure.com, Port:3306.")
