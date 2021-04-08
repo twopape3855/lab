@@ -11,6 +11,22 @@ from pykafka import KafkaClient
 
 YAML = "twopape1965-ShiftCalendar-1.0.0-swagger.yaml"
 
+
+hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
+max_tries = app_config['tries']['max_retries']
+current_attempts=0
+while current_attempts < max_tries:
+    logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
+    try:
+        client = KafkaClient(hosts=hostname)
+        topic = client.topics[str.encode(app_config['events']['topic'])]
+    except (SocketDisconnectedError, LeaderNotAvailable) as e:
+        logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
+        time.sleep(app_config['sleep']['time'])
+        current_attempts+=1
+producer = topic.get_sync_producer()
+
+
 def log_data(FILE_NAME, MAX_EVENTS, body, req_list):
     req_list.append(body)
     if len(req_list) > MAX_EVENTS:
@@ -19,23 +35,6 @@ def log_data(FILE_NAME, MAX_EVENTS, body, req_list):
         for obj in req_list:
             json_str = json.dumps(obj)
             file.write(json_str + '\n')
-
-
-def get_producer():
-    hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
-    max_tries = app_config['tries']['max_retries']
-    current_attempts=0
-    while current_attempts < max_tries:
-        logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
-        try:
-            client = KafkaClient(hosts=hostname)
-            topic = client.topics[str.encode(app_config['events']['topic'])]
-        except (SocketDisconnectedError, LeaderNotAvailable) as e:
-            logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
-            time.sleep(app_config['sleep']['time'])
-            current_attempts+=1
-    producer = topic.get_sync_producer()
-    return producer
 
 
 def add_user(body):
@@ -49,7 +48,6 @@ def add_user(body):
     # r = requests.post(app_config['eventstore1']['url'], json=body, headers=headers)
     # client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
     # topic = client.topics[str.encode(app_config['events']['topic'])]
-    producer = get_producer()
 
     msg = { "type" : "user",
             "datetime" : datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
@@ -78,7 +76,6 @@ def add_shift(body):
 
     # client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
     # topic = client.topics[str.encode(app_config['events']['topic'])]
-    producer = get_producer()
 
     msg = { "type" : "shift",
             "datetime" : datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
