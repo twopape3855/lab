@@ -115,7 +115,7 @@ def get_shifts(start_timestamp, end_timestamp):
     
     end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
-    shifts = session.query(Shift).filter(and_(Shift.date_created >= timestamp_datetime, Shift.date_created < end_timestamp_datetime))
+    shifts = session.query(Shift).filter(and_(Shift.date_created >= start_timestamp_datetime, Shift.date_created < end_timestamp_datetime))
 
     results_list = []
     
