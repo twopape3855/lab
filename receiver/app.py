@@ -8,7 +8,7 @@ import logging
 import logging.config
 import datetime
 from pykafka import KafkaClient
-from pykafka.exceptions import SocketDisconnectedError, LeaderNotAvailable
+from pykafka.exceptions import SocketDisconnectedError, LeaderNotAvailable, NoBrokersAvailableError
 
 YAML = "twopape1965-ShiftCalendar-1.0.0-swagger.yaml"
 
@@ -170,7 +170,7 @@ while current_attempts < max_tries:
         producer = topic.get_sync_producer()
         print("bye")
         break
-    except (SocketDisconnectedError, LeaderNotAvailable) as e:
+    except (SocketDisconnectedError, LeaderNotAvailable, NoBrokersAvailableError) as e:
         logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
         time.sleep(app_config['sleep']['time'])
         current_attempts+=1
