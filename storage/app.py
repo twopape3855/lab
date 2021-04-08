@@ -181,6 +181,7 @@ def process_messages():
                 elif msg['type'] == "income":
                     add_income(payload)
                 consumer.commit_offsets()
+            break
         except (SocketDisconnectedError, LeaderNotAvailable) as e:
             logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
             time.sleep(app_config['sleep']['time'])

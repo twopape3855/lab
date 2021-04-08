@@ -20,11 +20,13 @@ while current_attempts < max_tries:
     try:
         client = KafkaClient(hosts=hostname)
         topic = client.topics[str.encode(app_config['events']['topic'])]
+        producer = topic.get_sync_producer()
+        break
     except (SocketDisconnectedError, LeaderNotAvailable) as e:
         logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
         time.sleep(app_config['sleep']['time'])
         current_attempts+=1
-producer = topic.get_sync_producer()
+
 
 
 def log_data(FILE_NAME, MAX_EVENTS, body, req_list):
