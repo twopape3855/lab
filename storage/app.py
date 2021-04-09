@@ -168,7 +168,7 @@ def process_messages():
             logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
             time.sleep(app_config['sleep']['time'])
             current_attempts+=1
-    
+    logger.info("function working as intended")
     topic = client.topics[str.encode(app_config['events']['topic'])]
     consumer = topic.get_simple_consumer(consumer_group=b'event_group',
                                                 reset_offset_on_start=False,
