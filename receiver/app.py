@@ -163,6 +163,7 @@ while current_attempts < max_tries:
     logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
     try:
         client = KafkaClient(hosts=hostname)
+        logger.info("Connected to Client.")
         break
     except (SocketDisconnectedError, LeaderNotAvailable, NoBrokersAvailableError) as e:
         logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
