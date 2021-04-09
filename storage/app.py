@@ -159,11 +159,12 @@ def process_messages():
     hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
     max_tries = app_config['tries']['max_retries']
     current_attempts=0
-    while current_attempts < max_tries:
+    flag = False
+    while (current_attempts < max_tries) and (flag != True):
         logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
         try:
             client = KafkaClient(hosts=hostname)
-            break
+            flag = True
         except (SocketDisconnectedError, LeaderNotAvailable) as e:
             logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
             time.sleep(app_config['sleep']['time'])
