@@ -160,6 +160,7 @@ hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
 max_tries = app_config['tries']['max_retries']
 current_attempts=0
 flag = False
+time_limit = app_config['sleep']['time']
 while (current_attempts < max_tries) and (flag != True):
     logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
     try:
@@ -167,7 +168,7 @@ while (current_attempts < max_tries) and (flag != True):
         flag = True
     except (SocketDisconnectedError, LeaderNotAvailable, NoBrokersAvailableError) as e:
         logger.error(f"attempted connection {current_attempts} of {app_config['tries']['max_retries']} failed retrying in {app_config['sleep']['time']} seconds.")
-        time.sleep(app_config['sleep']['time'])
+        time.sleep(time_limit)
         current_attempts+=1
 topic = client.topics[str.encode(app_config['events']['topic'])]
 producer = topic.get_sync_producer()
