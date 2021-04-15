@@ -112,7 +112,7 @@ def add_income(body):
 app = connexion.FlaskApp(__name__, specification_dir='')
 
 
-app.add_api(YAML,strict_validation=True, validate_responses=True)
+app.add_api(YAML, base_path="/receiver", strict_validation=True, validate_responses=True)
 
 
 # with open('app_conf.yaml', 'r') as f:

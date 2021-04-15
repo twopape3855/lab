@@ -196,7 +196,7 @@ def process_messages():
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 
-app.add_api(YAML, strict_validation=True, validate_responses=True)
+app.add_api(YAML, base_path="/storage", strict_validation=True, validate_responses=True)
 
 
 # with open('app_conf.yaml', 'r') as f:

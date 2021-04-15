@@ -163,7 +163,7 @@ CORS(app.app)
 app.app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-app.add_api(YAML,strict_validation=True, validate_responses=True)
+app.add_api(YAML, base_path="/processing", strict_validation=True, validate_responses=True)
 
 
 # with open('app_conf.yaml', 'r') as f:
@@ -178,7 +178,7 @@ app.add_api(YAML,strict_validation=True, validate_responses=True)
 # logger = logging.getLogger('basicLogger')
 
 
-if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
+if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] != "test":
     print("In Test Environment")
     app_conf_file = "/config/app_conf.yml"
     log_conf_file = "/config/log_conf.yml"
