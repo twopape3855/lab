@@ -50,7 +50,7 @@ services:
     image: receiver
     ports:
       - "8080"
-    networks: :
+    networks:
       - "api.network"
     environment:
       - TARGET_ENV=test
