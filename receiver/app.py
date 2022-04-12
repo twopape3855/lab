@@ -138,11 +138,12 @@ if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
     log_conf_file = "/config/log_conf.yml"
 else:
     print("In Dev Environment")
-    app_conf_file = "app_conf.yml"
-    log_conf_file = "log_conf.yml"
+    app_conf_file = "app_conf.yaml"
+    log_conf_file = "log_conf.yaml"
 
 with open(app_conf_file, 'r') as f:
     app_config = yaml.safe_load(f.read())
+    machine_ip = os.getenv(app_config['events']['hostname'])
 
     # External Logging Configuration
 with open(log_conf_file, 'r') as f:
@@ -157,13 +158,13 @@ logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
 
-hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
+hostname = f"{machine_ip}:{app_config['events']['port']}"
 max_tries = app_config['tries']['max_retries']
 current_attempts=0
 flag = False
 time_limit = app_config['sleep']['time']
 while (current_attempts < max_tries) and (flag != True):
-    logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
+    logger.info(f"Attempting to connect to client {hostname} attempt {current_attempts} of {app_config['tries']['max_retries']}")
     try:
         client = KafkaClient(hosts=hostname)
         flag = True

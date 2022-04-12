@@ -2,10 +2,14 @@ version: 1
 datastores:
   user: events
   password: password
-  hostname: acit3855-sba-microservices-vm-cameron-woolfries.eastus2.cloudapp.azure.com
+  hostname: machine_ip
   port: 3306
   db: events
 events:
-  hostname: acit3855-sba-microservices-vm-cameron-woolfries.eastus2.cloudapp.azure.com
+  hostname: machine_ip
   port: 9092
   topic: events
+tries:
+  max_retries: 100
+sleep:
+  time: 5
