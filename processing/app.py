@@ -37,7 +37,7 @@ def populate_stats():
 
     curr_date = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
 
-    r1 = requests.get(app_config['eventstore1']['url']+"/shifts?start_timestamp="+curr_stats['timestamp']+"&end_timestamp="+curr_date)
+    r1 = requests.get(app_config['eventstore1']['url']+curr_stats['timestamp']+"&end_timestamp="+curr_date)
 
     r1_list = r1.json()
 
@@ -55,7 +55,7 @@ def populate_stats():
     else:
         logger.error(f'Response code not OK.')
 
-    r2 = requests.get(app_config['eventstore2']['url']+"/incomes?start_timestamp="+curr_stats['timestamp']+"&end_timestamp="+curr_date)
+    r2 = requests.get(app_config['eventstore2']['url']+curr_stats['timestamp']+"&end_timestamp="+curr_date)
 
     r2_list = r2.json()
 
@@ -159,7 +159,7 @@ def init_scheduler():
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 
-if "TARGET_ENV" not in os.environ and os.environ["TARGET_ENV"] != "test":
+if "TARGET_ENV" not in os.environ or os.environ["TARGET_ENV"] != "test":
     CORS(app.app)
     app.app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -185,8 +185,8 @@ if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
     log_conf_file = "/config/log_conf.yml"
 else:
     print("In Dev Environment")
-    app_conf_file = "app_conf.yml"
-    log_conf_file = "log_conf.yml"
+    app_conf_file = "app_conf.yaml"
+    log_conf_file = "log_conf.yaml"
 
 with open(app_conf_file, 'r') as f:
     app_config = yaml.safe_load(f.read())

@@ -23,9 +23,7 @@ from threading import Thread
 
 
 YAML = "twopape1965-ShiftCalendar-1.0.0-swagger.yaml"
-DB_ENGINE = create_engine("mysql+pymysql://events:password@acit3855-sba-microservices-vm-cameron-woolfries.eastus2.cloudapp.azure.com:3306/events")
-Base.metadata.bind = DB_ENGINE
-DB_SESSION = sessionmaker(bind=DB_ENGINE)
+
 
 def add_user(body):
     """ Receives a user info to add to the users table """
@@ -157,12 +155,12 @@ def get_incomes(start_timestamp, end_timestamp):
 
 def process_messages():
     """Process event messages"""
-    hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
+    hostname = f"{machine_ip}:{app_config['events']['port']}"
     max_tries = app_config['tries']['max_retries']
     current_attempts=0
     flag = False
     while (current_attempts < max_tries) and (flag != True):
-        logger.info(f"Attempting to connect to client attempt {current_attempts} of {app_config['tries']['max_retries']}")
+        logger.info(f"Attempting to connect to client {hostname} attempt {current_attempts} of {app_config['tries']['max_retries']}")
         try:
             client = KafkaClient(hosts=hostname)
             flag = True
@@ -217,11 +215,12 @@ if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
     log_conf_file = "/config/log_conf.yml"
 else:
     print("In Dev Environment")
-    app_conf_file = "app_conf.yml"
-    log_conf_file = "log_conf.yml"
+    app_conf_file = "app_conf.yaml"
+    log_conf_file = "log_conf.yaml"
 
 with open(app_conf_file, 'r') as f:
     app_config = yaml.safe_load(f.read())
+    machine_ip = os.getenv(app_config['events']['hostname'])
 
     # External Logging Configuration
 with open(log_conf_file, 'r') as f:
@@ -235,6 +234,9 @@ logger = logging.getLogger('basicLogger')
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
+DB_ENGINE = create_engine(f"mysql+pymysql://events:password@{machine_ip}:3306/events")
+Base.metadata.bind = DB_ENGINE
+DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
 if __name__ == "__main__":
     t1 = Thread(target=process_messages)

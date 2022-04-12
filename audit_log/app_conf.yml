@@ -1,5 +1,5 @@
 version: 1
 events:
-  hostname: acit3855-sba-microservices-vm-cameron-woolfries.eastus2.cloudapp.azure.com
+  hostname: machine_ip
   port: 9092
   topic: events

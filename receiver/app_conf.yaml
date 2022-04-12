@@ -6,6 +6,10 @@ eventstore2:
 eventstore3:
   url: http://localhost:8090/user/shift/income
 events:
-  hostname: acit3855-sba-microservices-vm-cameron-woolfries.eastus2.cloudapp.azure.com
+  hostname: machine_ip
   port: 9092
   topic: events
+sleep:
+  time: 5
+tries:
+  max_retries: 100

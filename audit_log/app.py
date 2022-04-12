@@ -59,7 +59,7 @@ def get_income(index):
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 
-if "TARGET_ENV" not in os.environ and os.environ["TARGET_ENV"] != "test":
+if "TARGET_ENV" not in os.environ or os.environ["TARGET_ENV"] != "test":
     CORS(app.app)
     app.app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -89,6 +89,7 @@ else:
 
 with open(app_conf_file, 'r') as f:
     app_config = yaml.safe_load(f.read())
+    machine_ip = os.getenv(app_config['events']['hostname'])
 
     # External Logging Configuration
 with open(log_conf_file, 'r') as f:
