@@ -155,7 +155,7 @@ def get_incomes(start_timestamp, end_timestamp):
 
 def process_messages():
     """Process event messages"""
-    hostname = f"{machine_ip}:{app_config['events']['port']}"
+    hostname = f"{app_config['events']['hostname']}:{app_config['events']['port']}"
     max_tries = app_config['tries']['max_retries']
     current_attempts=0
     flag = False
@@ -211,8 +211,8 @@ app.add_api(YAML, base_path="/storage", strict_validation=True, validate_respons
 
 if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
     print("In Test Environment")
-    app_conf_file = "/config/app_conf.yml"
-    log_conf_file = "/config/log_conf.yml"
+    app_conf_file = "/config/app_conf.yaml"
+    log_conf_file = "/config/log_conf.yaml"
 else:
     print("In Dev Environment")
     app_conf_file = "app_conf.yaml"
@@ -220,7 +220,6 @@ else:
 
 with open(app_conf_file, 'r') as f:
     app_config = yaml.safe_load(f.read())
-    machine_ip = os.getenv(app_config['events']['hostname'])
 
     # External Logging Configuration
 with open(log_conf_file, 'r') as f:
@@ -234,7 +233,7 @@ logger = logging.getLogger('basicLogger')
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
-DB_ENGINE = create_engine(f"mysql+pymysql://events:password@{machine_ip}:3306/events")
+DB_ENGINE = create_engine(f"mysql+pymysql://events:password@{app_config['events']['hostname']}:3306/events")
 Base.metadata.bind = DB_ENGINE
 DB_SESSION = sessionmaker(bind=DB_ENGINE)
 

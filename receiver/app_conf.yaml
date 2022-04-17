@@ -6,7 +6,7 @@ eventstore2:
 eventstore3:
   url: http://localhost:8090/user/shift/income
 events:
-  hostname: machine_ip
+  hostname: localhost
   port: 9092
   topic: events
 sleep:
